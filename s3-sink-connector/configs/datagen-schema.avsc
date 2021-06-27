@@ -1,0 +1,51 @@
+{
+  "name": "examples_s3_sink",
+  "type": "record",
+  "fields": [
+    {
+      "name": "riderId",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "regex": "[A-Z0-9]*",
+          "length": 10
+        }
+      }
+    },
+    {
+      "name": "riderState",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "options": [
+            "OFFLINE",
+            "READY_DELIVERY",
+            "ACCEPT_DELIVERY",
+            "IN_DELIVERY",
+            "COMPLETE_DELIVERY"
+          ]
+        }
+      }
+    },
+    {
+      "name": "orderId",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "regex": "[A-Z0-9]*",
+          "length": 10
+        }
+      }
+    },
+    {
+      "name": "orderMessage",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "regex": "[a-zA-Z0-9]*",
+          "length": 100
+        }
+      }
+    }
+  ]
+}

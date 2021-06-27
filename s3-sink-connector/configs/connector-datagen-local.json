@@ -1,0 +1,14 @@
+{
+  "connector.class": "io.confluent.kafka.connect.datagen.DatagenConnector",
+  "kafka.topic": "examples-s3-sink",
+  "tasks.max": "1",
+
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": "false",
+
+  "max.interval": "500",
+  "iterations": "-1",
+  "schema.string": "{\r\n  \"name\": \"examples_s3_sink\",\r\n  \"type\": \"record\",\r\n  \"fields\": [\r\n    {\r\n      \"name\": \"riderId\",\r\n      \"type\": {\r\n        \"type\": \"string\",\r\n        \"arg.properties\": {\r\n          \"regex\": \"[A-Z0-9]*\",\r\n          \"length\": 10\r\n        }\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"riderState\",\r\n      \"type\": {\r\n        \"type\": \"string\",\r\n        \"arg.properties\": {\r\n          \"options\": [\r\n            \"OFFLINE\",\r\n            \"READY_DELIVERY\",\r\n            \"ACCEPT_DELIVERY\",\r\n            \"IN_DELIVERY\",\r\n            \"COMPLETE_DELIVERY\"\r\n          ]\r\n        }\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"orderId\",\r\n      \"type\": {\r\n        \"type\": \"string\",\r\n        \"arg.properties\": {\r\n          \"regex\": \"[A-Z0-9]*\",\r\n          \"length\": 10\r\n        }\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"orderMessage\",\r\n      \"type\": {\r\n        \"type\": \"string\",\r\n        \"arg.properties\": {\r\n          \"regex\": \"[a-zA-Z0-9]*\",\r\n          \"length\": 100\r\n        }\r\n      }\r\n    }\r\n  ]\r\n}",
+  "schema.keyfield": "riderId"
+}

@@ -1,0 +1,78 @@
+version: "3.5"
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.5.5
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+    networks:
+      - dev
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  broker:
+    image: confluentinc/cp-kafka:5.5.5
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    networks:
+      - dev
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL_LISTENER://broker:19092,LOCALHOST_LISTENER://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL_LISTENER:PLAINTEXT,LOCALHOST_LISTENER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL_LISTENER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true" # For Develop only
+
+  connect:
+    image: confluentinc/cp-kafka-connect:5.5.5
+    container_name: connect
+    ports:
+      - 8083:8083
+    volumes:
+      - ./connectors:/usr/share/my-connectors
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: broker:19092
+      CONNECT_GROUP_ID: connect
+      CONNECT_CONFIG_STORAGE_TOPIC: connect-config
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_TOPIC: connect-offset
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_TOPIC: connect-status
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/usr/share/my-connectors"
+      CONNECT_REST_ADVERTISED_HOST_NAME: connect
+    depends_on:
+      - broker
+    networks:
+      - dev
+
+  localstack:
+    image: localstack/localstack:0.12.13
+    container_name: localstack
+    ports:
+      - 4563-4599:4563-4599
+      - 8080:8080
+    networks:
+      - dev
+    environment:
+      SERVICES: s3
+      DEBUG: 1
+      DATA_DIR: /tmp/localstack/data
+      HOST_TMP_FOLDER: /tmp
+      DEFAULT_REGION: ap-northeast-2
+      PORT_WEB_UI: 8080
+    volumes:
+      - /tmp:/tmp
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  dev:
+    name: dev
