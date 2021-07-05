@@ -42,6 +42,10 @@ restart-connectors:
 	$(CURL) -X POST $(CONNECT)/connectors/$(DATAGEN_CONNECTOR_NAME)/restart | $(JQ) .
 	$(CURL) -X POST $(CONNECT)/connectors/$(S3_CONNECTOR_NAME)/restart | $(JQ) .
 
+pause-connectors:
+	$(CURL) -X PUT $(CONNECT)/connectors/$(DATAGEN_CONNECTOR_NAME)/pause | $(JQ) .
+	$(CURL) -X PUT $(CONNECT)/connectors/$(S3_CONNECTOR_NAME)/pause | $(JQ) .
+
 restart-connectors-tasks:
 	@read -p "Task id : " taskId; \
 	$(CURL) -X POST $(CONNECT)/connectors/$(DATAGEN_CONNECTOR_NAME)/tasks/$$taskId/restart | $(JQ) .; \

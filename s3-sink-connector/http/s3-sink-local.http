@@ -1,3 +1,17 @@
+### Properties
+@endpoint=http://localhost:8083
+@connector-name=s3-sink-local
+
+### Get Connectors Status
+GET {{endpoint}}/connectors
+
+### Get Connector Status
+GET {{endpoint}}/connectors/{{connector-name}}/status
+
+### Create or Modify Connector
+PUT {{endpoint}}/connectors/{{connector-name}}/config
+Content-Type: application/json
+
 {
   "connector.class": "io.confluent.connect.s3.S3SinkConnector",
   "topics": "examples-s3-sink",
@@ -26,3 +40,9 @@
   "timezone": "Asia/Seoul",
   "timestamp.extractor": "Record"
 }
+
+### Pause Connector
+PUT {{endpoint}}/connectors/{{connector-name}}/pause
+
+### Restart Connector
+PUT {{endpoint}}/connectors/{{connector-name}}/restart
